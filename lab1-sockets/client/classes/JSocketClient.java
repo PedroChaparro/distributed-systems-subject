@@ -18,6 +18,7 @@ public class JSocketClient {
     private Socket clientSk;
     private ObjectOutputStream oos;
     private ObjectInputStream ois;
+    private Queue<Song> pendingSongs;
 
     public JSocketClient(String address, int port) {
         try {
@@ -25,6 +26,7 @@ public class JSocketClient {
             this.address = InetAddress.getByName(address);
             this.oos = null;
             this.ois = null;
+            this.pendingSongs = new LinkedList<Song>();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -38,6 +40,9 @@ public class JSocketClient {
             this.oos.flush();
             this.ois = new ObjectInputStream(this.clientSk.getInputStream());
             System.out.println("\n [Client]: Connection established.");
+
+            // Send the pending songs
+            new Thread(this::dequePendingSongs).start();
 
             // Listen for the server responses
             while (true) {
@@ -73,6 +78,20 @@ public class JSocketClient {
             this.oos.flush();
         } catch (Exception e) {
             System.out.println("\n [Client]: Unable to send the song.");
+            this.pendingSongs.add(s);
+        }
+    }
+
+    private void dequePendingSongs() {
+        try {
+            while (!this.pendingSongs.isEmpty()) {
+                System.out.println("\n [Client]: Sending pending song...");
+                Song s = this.pendingSongs.remove();
+                this.send(s);
+            }
+        } catch (Exception e) {
+            System.out.println("\n [Client]: Unable to send the pending songs.");
+            System.out.println("\n [Client]: Error trace: " + e);
         }
     }
 
