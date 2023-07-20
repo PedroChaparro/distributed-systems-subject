@@ -12,10 +12,10 @@ public class Main {
 
         // 1) Send some initial songs
         Song[] songs = {
-                new Song("Nothing Else Matters", "Metallica", 300),
-                new Song("The Unforgiven", "Metallica", 400),
-                new Song("The Unforgiven II", "Metallica", 500),
-                new Song("The Unforgiven III", "Metallica", 600),
+                new Song("Song name 1", "Author 1", 300),
+                new Song("Song name 2", "Author 2", 400),
+                new Song("Song name 3", "Author 3", 500),
+                new Song("Song name 4", "Author 4", 600),
         };
 
         for(Song s : songs) {
