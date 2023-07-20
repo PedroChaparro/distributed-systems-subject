@@ -15,6 +15,6 @@ public class Client {
     }
 
     public void send(Song s) {
-        this.sk.send(s);
+        this.sk.queue(s);
     }
 }

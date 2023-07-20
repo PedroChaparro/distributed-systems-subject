@@ -20,13 +20,42 @@ public class JSocketClient {
     private ObjectInputStream ois;
     private Queue<Song> pendingSongs;
 
+    private class SendingThread extends Thread {
+        @Override
+        public void run() {
+            while (true) {
+                System.out.println("\n [Client]: Waiting for a song to send in a separated thread...");
+                Song s = null;
+
+                synchronized (pendingSongs) {
+                    while (pendingSongs.isEmpty()) {
+                        try {
+                            // Suspends the thread until a notification is received
+                            pendingSongs.wait();
+                        } catch (InterruptedException e) {
+                            System.out.println("\n [Client]: There was an error in the 'sending thread'.");
+                            System.exit(1);
+                        }
+                    }
+                    s = pendingSongs.remove();
+                }
+
+                // When a song is received, send it
+                send(s);
+            }
+        }
+    }
+
     public JSocketClient(String address, int port) {
         try {
             this.port = port;
             this.address = InetAddress.getByName(address);
             this.oos = null;
             this.ois = null;
+
+            // Start the sending thread
             this.pendingSongs = new LinkedList<Song>();
+            new SendingThread().start();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -40,9 +69,6 @@ public class JSocketClient {
             this.oos.flush();
             this.ois = new ObjectInputStream(this.clientSk.getInputStream());
             System.out.println("\n [Client]: Connection established.");
-
-            // Send the pending songs
-            new Thread(this::dequePendingSongs).start();
 
             // Listen for the server responses
             while (true) {
@@ -72,26 +98,27 @@ public class JSocketClient {
         }
     }
 
-    public void send(Song s) {
+    public void queue(Song s) {
+        synchronized (this.pendingSongs) {
+            this.pendingSongs.add(s);
+            // Notify / wake up the sending thread
+            this.pendingSongs.notify();
+        }
+    }
+
+    private void send(Song s) {
         try {
             this.oos.writeObject(s);
             this.oos.flush();
         } catch (Exception e) {
-            System.out.println("\n [Client]: Unable to send the song.");
-            this.pendingSongs.add(s);
-        }
-    }
-
-    private void dequePendingSongs() {
-        try {
-            while (!this.pendingSongs.isEmpty()) {
-                System.out.println("\n [Client]: Sending pending song...");
-                Song s = this.pendingSongs.remove();
-                this.send(s);
+            System.out.println("\n [Client]: Unable to send the song. Retrying in 5 seconds...");
+            try {
+                Thread.sleep(5000);
+                this.queue(s);
+            } catch (InterruptedException e2) {
+                System.out.println("\n [Client]: There was an error enqueueing the the following failed song: " + s.getTitle());
+                System.exit(1);
             }
-        } catch (Exception e) {
-            System.out.println("\n [Client]: Unable to send the pending songs.");
-            System.out.println("\n [Client]: Error trace: " + e);
         }
     }
 
