@@ -9,24 +9,27 @@ import domain.WebToPdfConverter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.concurrent.CompletableFuture;
 
 public class WebToPdfPlaywrightConverter implements WebToPdfConverter {
-    private BrowserType.LaunchOptions browserOptions;
+    private BrowserType.LaunchOptions options;
     private String outputDirectoryPath;
 
     public WebToPdfPlaywrightConverter(String outputDirectoryPath) {
-        this.browserOptions = new BrowserType.LaunchOptions().setHeadless(false);
         this.outputDirectoryPath = outputDirectoryPath;
+        this.options = new BrowserType.LaunchOptions().setHeadless(false);
     }
 
     @Override
     public String convert(String url, String name) {
-        try(Playwright playwright = Playwright.create()) {
-            // Launch a new browser instance
-            Browser browser = playwright.chromium().launch(browserOptions);
-            Page page = browser.newPage();
+        try (Playwright playwright = Playwright.create()){
+            System.out.println("[CONVERTER] Converting the url: " + url);
+
+            // Open a browser
+            Browser browser = playwright.chromium().launch(this.options);
 
             // Go to the requested page
+            Page page = browser.newPage();
             page.navigate(url);
 
             // Download the page as a pdf file
@@ -36,10 +39,13 @@ public class WebToPdfPlaywrightConverter implements WebToPdfConverter {
             os.write(pageByes);
             os.close();
 
+            // Close the page
+            page.close();
+
             // Return the path of the saved file
             return pdf.getPath();
         }catch (Exception e){
-            System.out.println("[CONVERTER] Something went wrong");
+            System.out.println("[CONVERTER] An error occurred when converting the url");
             System.out.println(e);
             return null;
         }
