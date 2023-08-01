@@ -45,15 +45,16 @@ public class ConvertersPoolOrchestrator {
                         try {
                             pendingSites.wait();
                         } catch (InterruptedException e) {
-                            System.out.println(String.format("[THREAD %d] The thread was interrupted \uD83D\uDCA5", id));
+                            System.out.println(String.format("[THREAD %d] The thread was interrupted while waiting the Queue \uD83D\uDCA5", id));
                             e.printStackTrace();
                         }
                     }
                 }
 
                 // Get the url
-                System.out.println(String.format("[THREAD %d] The thread received a new url \uD83D\uDC77", id));
                 Site site = pendingSites.poll();
+                System.out.println(String.format("[THREAD %d] The thread received a new url \uD83D\uDC77", id));
+
                 if (site == null) {
                     System.out.println(String.format("[THREAD %d] The thread received a null site \uD83D\uDCA5", id));
                     continue;

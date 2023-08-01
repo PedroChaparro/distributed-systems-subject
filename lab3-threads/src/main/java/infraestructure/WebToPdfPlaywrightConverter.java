@@ -17,14 +17,12 @@ public class WebToPdfPlaywrightConverter implements WebToPdfConverter {
 
     public WebToPdfPlaywrightConverter(String outputDirectoryPath) {
         this.outputDirectoryPath = outputDirectoryPath;
-        this.options = new BrowserType.LaunchOptions().setHeadless(false);
+        this.options = new BrowserType.LaunchOptions().setHeadless(true);
     }
 
     @Override
     public String convert(String url, String name) {
         try (Playwright playwright = Playwright.create()){
-            System.out.println("[CONVERTER] Converting the url: " + url);
-
             // Open a browser
             Browser browser = playwright.chromium().launch(this.options);
 
