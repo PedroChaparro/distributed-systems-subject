@@ -2,6 +2,8 @@ import domain.Site;
 import infraestructure.ConvertersPoolOrchestrator;
 import io.github.cdimascio.dotenv.Dotenv;
 
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         // Configure the environment variables
@@ -21,14 +23,23 @@ public class Main {
         }
 
         // Add some work
-        orchestrator.enqueueSite(new Site("https://www.ruby-lang.org/en/", "ruby"));
-        orchestrator.enqueueSite(new Site("https://www.rust-lang.org/", "rust"));
-        orchestrator.enqueueSite(new Site("https://go.dev/", "go"));
-        orchestrator.enqueueSite(new Site("https://www.python.org/", "python"));
-        orchestrator.enqueueSite(new Site("https://www.typescriptlang.org/", "typescript"));
-        orchestrator.enqueueSite(new Site("https://www.haskell.org/", "haskell"));
-        orchestrator.enqueueSite(new Site("https://www.scala-lang.org/", "scala"));
-        orchestrator.enqueueSite(new Site("https://www.php.net/", "php"));
-        orchestrator.enqueueSite(new Site("https://kotlinlang.org/", "kotlin"));
+        List<Site> defaultTargets = List.of(
+                new Site("https://www.ruby-lang.org/en/", "Ruby"),
+                new Site("https://www.rust-lang.org/", "Rust"),
+                new Site("https://go.dev/", "Go"),
+                new Site("https://www.python.org/", "Python"),
+                new Site("https://www.typescriptlang.org/", "TypeScript"),
+                new Site("https://www.haskell.org/", "Haskell"),
+                new Site("https://www.scala-lang.org/", "Scala"),
+                new Site("https://kotlinlang.org/", "Kotlin")
+        );
+
+        // Download each target 4 times
+        for(int i = 0; i < 4; i++) {
+            for(Site s : defaultTargets) {
+                Site numberedSite = new Site(s.getUrl(), s.getName() + " " + (i + 1));
+                orchestrator.enqueueSite(numberedSite);
+            }
+        }
     }
 }
