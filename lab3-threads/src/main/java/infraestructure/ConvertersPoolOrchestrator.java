@@ -45,7 +45,7 @@ public class ConvertersPoolOrchestrator {
                         try {
                             pendingSites.wait();
                         } catch (InterruptedException e) {
-                            System.out.println(String.format("[THREAD %d] The thread was interrupted while waiting the Queue \uD83D\uDCA5", id));
+                            // System.out.println(String.format("[THREAD %d] The thread was interrupted while waiting the Queue \uD83D\uDCA5", id));
                             e.printStackTrace();
                         }
                     }
@@ -56,13 +56,13 @@ public class ConvertersPoolOrchestrator {
                 System.out.println(String.format("[THREAD %d] The thread received a new url \uD83D\uDC77", id));
 
                 if (site == null) {
-                    System.out.println(String.format("[THREAD %d] The thread received a null site \uD83D\uDCA5", id));
+                    // System.out.println(String.format("[THREAD %d] The thread received a null site \uD83D\uDCA5", id));
                     continue;
                 }
 
                 Result result = new Result(
                         site.getName(),
-                        converterImplementation.convert(site.getUrl(), site.getName().toLowerCase().replaceAll("\\s+", "-"))
+                        converterImplementation.convert(site.getUrl(), site.getName().toLowerCase().trim().replaceAll("\\s+", "-"))
                 );
 
                 System.out.println(String.format("[THREAD %d] The thread finished the conversion \uD83D\uDC4C", id));
