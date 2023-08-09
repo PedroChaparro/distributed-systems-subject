@@ -1,22 +1,24 @@
 package infraestructure;
 
 import domain.DocumentConverter;
-
-// import java.io.BufferedReader;
-// import java.io.InputStreamReader;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class LibreOfficeDocumentConverter implements DocumentConverter {
     private String sharedCommand;
     private String outputDirectoryPath;
 
-    public LibreOfficeDocumentConverter(String libreOfficePath, String outputDirectory) {
+    public LibreOfficeDocumentConverter() {
+        Dotenv dotenv = Dotenv.load();
+        String outputDirectoryPath = dotenv.get("OUTPUT_DIRECTORY");
+        String libreOfficePath = dotenv.get("SOFFICE_PATH");
+
         this.sharedCommand = String.format(
                 "%s --headless --convert-to pdf:writer_pdf_Export --outdir \"%s\"",
                 libreOfficePath,
-                outputDirectory
+                outputDirectoryPath
         );
 
-        this.outputDirectoryPath = outputDirectory;
+        this.outputDirectoryPath = outputDirectoryPath;
     }
 
     private String convert(String sourcePath) {
@@ -35,24 +37,10 @@ public class LibreOfficeDocumentConverter implements DocumentConverter {
             // Execute the process
             Process process = processBuilder.start();
 
-            // Read the output of the process
-            /*
-            StringBuilder output = new StringBuilder();
-            BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream())
-            );
-            String outputLine;
-
-            while ((outputLine = reader.readLine()) != null) {
-                output.append(outputLine).append("\n");
-            }
-            */
-
             // Wait for the process to finish
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                System.out.println("[CONVERTER] An error occurred when converting the document");
-                // System.out.println(output);
+                System.out.println("[CONVERTER] The exit code was not 0");
                 return null;
             }
 

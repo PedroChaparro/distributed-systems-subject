@@ -1,6 +1,11 @@
 import domain.DocumentConverter;
+import infraestructure.ConvertersPoolOrchestrator;
 import infraestructure.LibreOfficeDocumentConverter;
 import io.github.cdimascio.dotenv.Dotenv;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -19,10 +24,27 @@ public class Main {
             System.exit(1);
         }
 
-        DocumentConverter converter =  new LibreOfficeDocumentConverter(libreOfficePath, outputDirectoryPath);
-        String path = converter.convertWordToPdf(
-                "/home/pacq/Downloads/lab-convert/input/word.docx"
-        );
-        System.out.println(path);
+        // Receive the files to convert
+        List<String> files = new ArrayList<>();
+        Scanner sc = new Scanner(System.in);
+
+        while (true) {
+            String input = sc.nextLine();
+            if(input.trim().toUpperCase().equals("EXIT")) break;
+            files.add(input);
+        }
+
+        // Create an instance of the orchestrator
+        ConvertersPoolOrchestrator orchestrator = new ConvertersPoolOrchestrator();
+
+        // Register 4 workers
+        for (int i = 0; i < 4; i++) {
+            orchestrator.registerWorker(i + 1);
+        }
+
+        // Convert
+        for (String filePath : files) {
+            orchestrator.enqueueFile(filePath);
+        }
     }
 }
