@@ -1,6 +1,4 @@
-import domain.DocumentConverter;
 import infraestructure.ConvertersPoolOrchestrator;
-import infraestructure.LibreOfficeDocumentConverter;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.ArrayList;
@@ -13,6 +11,7 @@ public class Main {
         Dotenv dotenv = Dotenv.configure().load();
         String outputDirectoryPath = dotenv.get("OUTPUT_DIRECTORY");
         String libreOfficePath = dotenv.get("SOFFICE_PATH");
+        String fallbackFontPath = dotenv.get("FALLBACK_FONT_PATH");
 
         if (outputDirectoryPath == null) {
             System.out.println("[MAIN] The OUTPUT_DIRECTORY environment variable is not set");
@@ -21,6 +20,11 @@ public class Main {
 
         if (libreOfficePath == null) {
             System.out.println("[MAIN] The SOFFICE_PATH environment variable is not set");
+            System.exit(1);
+        }
+
+        if (fallbackFontPath == null) {
+            System.out.println("[MAIN] The FALLBACK_FONT_PATH environment variable is not set");
             System.exit(1);
         }
 

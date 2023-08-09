@@ -25,7 +25,7 @@ public class ConvertersPoolOrchestrator {
         // Create a new thread to listen for new files
         Thread worker = new Thread(() -> {
             // Create a new instance of a converter (worker)
-            DocumentConverter converterImplementation = new LibreOfficeDocumentConverter();
+            DocumentConverter converterImplementation = new JOfficeDocumentConverter();
 
             // Listening loop
             while (true) {
