@@ -16,6 +16,17 @@ public class JOfficeDocumentConverter implements DocumentConverter {
         this.outputDirectoryPath = dotenv.get("OUTPUT_DIRECTORY");
     }
 
+    private String handleException(Exception e, String documentName){
+        logger.logError(
+                "CONVERTER",
+                "An error occurred when converting the document " + documentName,
+                true
+        );
+        System.out.println(e);
+
+        return null;
+    }
+
     @Override
     public String convertWordToPdf(String sourcePath) {
         try {
@@ -32,16 +43,7 @@ public class JOfficeDocumentConverter implements DocumentConverter {
             word.saveAsPDF(outputFilePath);
             return outputFilePath;
         }catch(Exception e){
-            String documentName = sourcePath.substring(sourcePath.lastIndexOf("/") + 1);
-
-            logger.logError(
-                    "CONVERTER",
-                    "An error occurred when converting the document " + documentName,
-                    true
-            );
-            System.out.println(e);
-
-            return null;
+            return handleException(e, sourcePath.substring(sourcePath.lastIndexOf("/") + 1));
         }
     }
 
@@ -61,16 +63,7 @@ public class JOfficeDocumentConverter implements DocumentConverter {
             ppt.saveAsPDF(outputFilePath);
             return outputFilePath;
         }catch(Exception e){
-            String documentName = sourcePath.substring(sourcePath.lastIndexOf("/") + 1);
-
-            logger.logError(
-                    "CONVERTER",
-                    "An error occurred when converting the document " + documentName,
-                    true
-            );
-            System.out.println(e);
-
-            return null;
+            return handleException(e, sourcePath.substring(sourcePath.lastIndexOf("/") + 1));
         }
     }
 
@@ -90,16 +83,7 @@ public class JOfficeDocumentConverter implements DocumentConverter {
             excel.saveAsPDF(outputFilePath);
             return outputFilePath;
         }catch(Exception e){
-            String documentName = sourcePath.substring(sourcePath.lastIndexOf("/") + 1);
-
-            logger.logError(
-                    "CONVERTER",
-                    "An error occurred when converting the document " + documentName,
-                    true
-            );
-            System.out.println(e);
-
-            return null;
+            return handleException(e, sourcePath.substring(sourcePath.lastIndexOf("/") + 1));
         }
     }
 
