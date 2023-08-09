@@ -1,4 +1,6 @@
+import domain.Logger;
 import infraestructure.ConvertersPoolOrchestrator;
+import infraestructure.StdoutLogger;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.ArrayList;
@@ -7,6 +9,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Logger logger = StdoutLogger.getInstance();
+
         // Configure the environment variables
         Dotenv dotenv = Dotenv.configure().load();
         String outputDirectoryPath = dotenv.get("OUTPUT_DIRECTORY");
@@ -14,17 +18,17 @@ public class Main {
         String fallbackFontPath = dotenv.get("FALLBACK_FONT_PATH");
 
         if (outputDirectoryPath == null) {
-            System.out.println("[MAIN] The OUTPUT_DIRECTORY environment variable is not set");
+            logger.logError("MAIN", "The OUTPUT_DIRECTORY environment variable is not set", false);
             System.exit(1);
         }
 
         if (libreOfficePath == null) {
-            System.out.println("[MAIN] The SOFFICE_PATH environment variable is not set");
+            logger.logError("MAIN", "The SOFFICE_PATH environment variable is not set", false);
             System.exit(1);
         }
 
         if (fallbackFontPath == null) {
-            System.out.println("[MAIN] The FALLBACK_FONT_PATH environment variable is not set");
+            logger.logError("MAIN", "The FALLBACK_FONT_PATH environment variable is not set", false);
             System.exit(1);
         }
 

@@ -1,15 +1,18 @@
 package infraestructure;
 
 import domain.DocumentConverter;
+import domain.Logger;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConvertersPoolOrchestrator {
     private Queue<String> pendingFiles;
+    private Logger logger;
 
     public ConvertersPoolOrchestrator() {
         this.pendingFiles = new ConcurrentLinkedQueue<>();
+        this.logger = StdoutLogger.getInstance();
     }
 
     public void enqueueFile(String file) {
@@ -18,7 +21,7 @@ public class ConvertersPoolOrchestrator {
             pendingFiles.notify();
         }
 
-        System.out.println(String.format("[ORCHESTRATOR] A new file was added to the queue ⌚"));
+        logger.logInfo("ORCHESTRATOR", "A new file was added to the queue ⌚", true);
     }
 
     public void registerWorker(int id){
@@ -29,14 +32,22 @@ public class ConvertersPoolOrchestrator {
 
             // Listening loop
             while (true) {
-                System.out.println(String.format("[THREAD %d] The thread is waiting for a new file \uD83D\uDCA4", id));
+                logger.logInfo(
+                        "THREAD " + id,
+                        "The thread is waiting for a new file \uD83D\uDCA4",
+                        true
+                );
 
                 synchronized (pendingFiles) {
                     while (pendingFiles.isEmpty()) {
                         try {
                             pendingFiles.wait();
                         } catch (InterruptedException e) {
-                            System.out.println(String.format("[THREAD %d] The thread was interrupted while waiting the Queue \uD83D\uDCA5", id));
+                            logger.logError(
+                                    "THREAD " + id,
+                                    "The thread was interrupted while waiting the Queue \uD83D\uDCA5",
+                                    true
+                            );
                             e.printStackTrace();
                         }
                     }
@@ -44,7 +55,11 @@ public class ConvertersPoolOrchestrator {
 
                 // Get the url
                 String filePath = pendingFiles.poll();
-                System.out.println(String.format("[THREAD %d] The thread received a new file \uD83D\uDC77", id));
+                logger.logInfo(
+                        "THREAD " + id,
+                        "The thread received a new file \uD83D\uDC77",
+                        true
+                );
                 if (filePath == null) continue;
 
                 // Get the file extension
@@ -67,14 +82,21 @@ public class ConvertersPoolOrchestrator {
                         break;
                     default:
                         resultingFilePath = null;
-                        System.out.println(String.format("[THREAD %d] The file extension is not supported \uD83D\uDEAB", id));
+                        logger.logError(
+                                "THREAD " + id,
+                                "The file extension is not supported \uD83D\uDEAB",
+                                false
+                        );
                         break;
                 }
 
                 // Print the result
                 if(resultingFilePath == null) continue;
-                System.out.println(String.format("[THREAD %d] The thread finished the conversion \uD83D\uDC4C", id));
-                System.out.println(resultingFilePath);
+                logger.logSuccess(
+                        "THREAD " + id,
+                        "The following file was converted successfully: " + resultingFilePath,
+                        false
+                );
             }
         });
 

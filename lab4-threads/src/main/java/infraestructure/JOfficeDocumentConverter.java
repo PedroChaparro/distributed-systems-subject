@@ -2,14 +2,17 @@ package infraestructure;
 
 import com.qoppa.office.*;
 import domain.DocumentConverter;
+import domain.Logger;
 import io.github.cdimascio.dotenv.Dotenv;
 
 public class JOfficeDocumentConverter implements DocumentConverter {
     private String outputDirectoryPath;
     private Dotenv dotenv;
+    private Logger logger;
 
     public JOfficeDocumentConverter() {
         this.dotenv = Dotenv.load();
+        this.logger = StdoutLogger.getInstance();
         this.outputDirectoryPath = dotenv.get("OUTPUT_DIRECTORY");
     }
 
@@ -31,8 +34,10 @@ public class JOfficeDocumentConverter implements DocumentConverter {
         }catch(Exception e){
             String documentName = sourcePath.substring(sourcePath.lastIndexOf("/") + 1);
 
-            System.out.println(
-                    String.format("[CONVERTER] An error occurred when converting the document %s", documentName)
+            logger.logError(
+                    "CONVERTER",
+                    "An error occurred when converting the document " + documentName,
+                    true
             );
             System.out.println(e);
 
@@ -58,8 +63,10 @@ public class JOfficeDocumentConverter implements DocumentConverter {
         }catch(Exception e){
             String documentName = sourcePath.substring(sourcePath.lastIndexOf("/") + 1);
 
-            System.out.println(
-                    String.format("[CONVERTER] An error occurred when converting the document %s", documentName)
+            logger.logError(
+                    "CONVERTER",
+                    "An error occurred when converting the document " + documentName,
+                    true
             );
             System.out.println(e);
 
@@ -85,8 +92,10 @@ public class JOfficeDocumentConverter implements DocumentConverter {
         }catch(Exception e){
             String documentName = sourcePath.substring(sourcePath.lastIndexOf("/") + 1);
 
-            System.out.println(
-                    String.format("[CONVERTER] An error occurred when converting the document %s", documentName)
+            logger.logError(
+                    "CONVERTER",
+                    "An error occurred when converting the document " + documentName,
+                    true
             );
             System.out.println(e);
 
