@@ -1,7 +1,7 @@
 ```mermaid
 mindmap
   root((SOAP))
-    Used to exange data between "web services"
+    Used to exchange data between "web services"
 
    Can also be used to call remote object's methods
 
