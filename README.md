@@ -20,14 +20,14 @@ The laboratories files contains `.md` files with the instructions and the code o
 
 The mind maps files contains `.md` files with mind maps about the topics of the subject.
 
-| Mind Map                                                 | Description                                                             |
-| -------------------------------------------------------- | ----------------------------------------------------------------------- |
-| [Sockets](./mindmaps/sockets.md)                         | Mind map about sockets                                                  |
-| [Sockets](./mindmaps/threads.md)                         | Mind map about threads                                                  |
-| [Sockets](./mindmaps/rmi.md)                             | Mind map about the Remote Method Invocation technology                  |
-| [Sockets](./mindmaps/corba.md)                           | Mind map about the Common Object Request Broker Architecture technology |
-| [Sockets](./mindmaps/soap.md)                            | Mind map about the Simple Object Access Protocol technology             |
-| [Sockets](./mindmaps/multiprocessors-architecture.md.md) | Mind map about the UMA, NUMA and CC-NUMA multiprocessors architectures  |
+| Mind Map                                                                    | Description                                                             |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [Sockets](./mindmaps/sockets.md)                                            | Mind map about sockets                                                  |
+| [Threads](./mindmaps/threads.md)                                            | Mind map about threads                                                  |
+| [RMI](./mindmaps/rmi.md)                                                    | Mind map about the Remote Method Invocation technology                  |
+| [CORBA](./mindmaps/corba.md)                                                | Mind map about the Common Object Request Broker Architecture technology |
+| [SOAP](./mindmaps/soap.md)                                                  | Mind map about the Simple Object Access Protocol technology             |
+| [Multiprocessors architectures](./mindmaps/multiprocessors-architecture.md) | Mind map about the UMA, NUMA and CC-NUMA multiprocessors architectures  |
 
 ## References
 
